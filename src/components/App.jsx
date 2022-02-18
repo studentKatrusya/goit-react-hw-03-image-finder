@@ -1,17 +1,154 @@
-export const App = () => {
-  return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        textTransform: 'uppercase',
-        color: '#010101',
-      }}
-    >
-      React homework template
-    </div>
-  );
+import { Component } from 'react';
+import Button from './Button';
+import ImageGallery from './ImageGallery';
+import Loader from './Loader';
+import Modal from './Modal';
+import Searchbar from './Searchbar';
+import Api from 'services/serviceApi';
+import ErrorMessage from './ErrorMessage';
+
+const Status = {
+  IDLE: 'idle',
+  PENDING: 'pending',
+  RESOLVED: 'resolved',
+  REJECTED: 'rejected',
 };
+
+export class App extends Component {
+  state = {
+    searchQuery: '',
+    images: [],
+    status: Status.IDLE,
+    page: 1,
+    error: '',
+    bigImage: '',
+    showModal: false,
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    const prevImages = prevState.searchQuery;
+    const nextImages = this.state.searchQuery;
+    const prevPage = prevState.page;
+    const nextPage = this.state.page;
+
+    if (prevImages !== nextImages) {
+      this.setState({
+        status: Status.PENDING,
+        page: 1,
+        images: [],
+      });
+      this.fetchGallery(nextImages, nextPage);
+    }
+
+    if (prevPage !== nextPage) {
+      this.fetchGallery(nextImages, nextPage);
+    }
+  }
+
+  fetchGallery(nextImages, nextPage) {
+    Api.fetchGallery(nextImages, nextPage).then(data => {
+      this.setState(prevState => {
+        return {
+          prevState,
+          images: [...prevState.images, ...data.hits],
+          status: Status.RESOLVED,
+          searchQuery: nextImages,
+        };
+      }).catch(error => this.setState({ error, status: Status.REJECTED }));
+    });
+  }
+
+  handleFormSubmit = data => {
+    this.fetchGallery(data);
+  };
+
+  toggleModal = largeImageURL => {
+    this.setState(({ showModal, bigImage }) => ({
+      showModal: !showModal,
+      bigImage: largeImageURL,
+    }));
+  };
+
+  closeModal = () => {
+    this.setState(() => ({
+      showModal: false,
+    }));
+  };
+
+  handleLoadMore() {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  }
+
+  render() {
+    const { images, bigImage, status } = this.state;
+
+    if (status === Status.IDLE) {
+      return (
+        <>
+          <Searchbar onSubmit={this.handleFormSubmit} />
+
+          <p>Enter a request.</p>
+        </>
+      );
+    }
+    if (status === Status.PENDING) {
+      return <Loader />;
+    }
+
+    if (status === Status.REJECTED) {
+      return <ErrorMessage />;
+    }
+
+    if (status === Status.RESOLVED) {
+      return (
+        <div>
+          <Searchbar onSubmit={this.handleFormSubmit} />
+          <ImageGallery
+            images={images}
+            toggleModal={largeImageURL => this.toggleModal(largeImageURL)}
+          />
+          {this.state.showModal && (
+            <Modal
+              onClick={() => {
+                this.toggleModal();
+              }}
+              image={bigImage}
+              closeModal={this.closeModal}
+            />
+          )}
+          {this.state.images.length !== 0 && (
+            <Button onClick={() => this.handleLoadMore()} />
+          )}
+        </div>
+      );
+    }
+  }
+}
+
+// {/* <ImageGallery
+//       images={images}
+//       toggleModal={largeImageURL => this.toggleModal(largeImageURL)}
+//     />} */}
+// <Searchbar onSubmit={this.handleFormSubmit} />
+// <ImageGallery
+//   images={images}
+//   toggleModal={largeImageURL => this.toggleModal(largeImageURL)}
+// />
+
+// {
+//   this.state.images.length !== 0 && (
+//     <Button onClick={() => this.handleLoadMore()} />)
+// }
+// {this.state.status === Status.PENDING && <Loader />}
+// {
+//   this.state.showModal && (
+//     <Modal
+//       onClick={() => {
+//         this.toggleModal();
+//       }}
+//       image={bigImage}
+//       closeModal={this.closeModal}
+//     />)
+// }
