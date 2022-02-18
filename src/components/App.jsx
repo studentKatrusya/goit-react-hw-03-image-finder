@@ -44,7 +44,7 @@ export class App extends Component {
     if (prevPage !== nextPage && nextPage !== 1) {
       this.fetchGallery(nextImages, nextPage);
     }
-    if (nextPage > 1) {
+    if (nextPage >= 1) {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
         behavior: 'smooth',

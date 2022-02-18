@@ -21,13 +21,12 @@ function ImageGallery({ images, toggleModal }) {
 }
 
 ImageGallery.propTypes = {
-  // images: PropTypes.arrey,
-  //   ({
-  //   key: PropTypes.number,
-  //   tags: PropTypes.string.isRequired,
-  //   webformatURL: PropTypes.string.isRequired,
-  //   largeImageURL: PropTypes.string.isRequired,
-  // }),
+  images: PropTypes.array,
   onClickItem: PropTypes.func,
 };
 export default ImageGallery;
+
+//   key: PropTypes.number,
+//   tags: PropTypes.string.isRequired,
+//   webformatURL: PropTypes.string.isRequired,
+//   largeImageURL: PropTypes.string.isRequired,
