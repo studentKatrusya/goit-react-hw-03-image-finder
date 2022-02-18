@@ -1,5 +1,7 @@
 import { Component } from 'react';
 import { Wrap, Form, Btn, Label, Input } from './Searchbar.styled';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class SearchBar extends Component {
   state = {
@@ -14,7 +16,7 @@ export default class SearchBar extends Component {
     event.preventDefault();
 
     if (this.state.searchQuery.trim() === '') {
-      alert('Enter your request.');
+      toast.info('Enter your request.');
       return;
     }
 
@@ -24,23 +26,26 @@ export default class SearchBar extends Component {
 
   render() {
     return (
-      <Wrap>
-        <Form onSubmit={this.handleSubmit}>
-          <Btn type="submit">
-            <Label>Search</Label>
-          </Btn>
+      <div>
+        <Wrap>
+          <Form onSubmit={this.handleSubmit}>
+            <Btn type="submit">
+              <Label>Search</Label>
+            </Btn>
 
-          <Input
-            type="text"
-            // name="searchQuery"
-            value={this.state.searchQuery}
-            onChange={this.handleNameChange}
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-          />
-        </Form>
-      </Wrap>
+            <Input
+              type="text"
+              // name="searchQuery"
+              value={this.state.searchQuery}
+              onChange={this.handleNameChange}
+              autoComplete="off"
+              autoFocus
+              placeholder="Search images and photos"
+            />
+          </Form>
+        </Wrap>
+        <ToastContainer autoClose={3000} theme={'colored'} />
+      </div>
     );
   }
 }

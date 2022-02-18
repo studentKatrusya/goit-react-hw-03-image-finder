@@ -6,6 +6,7 @@ import Modal from './Modal';
 import Searchbar from './Searchbar';
 import Api from 'services/serviceApi';
 import ErrorMessage from './ErrorMessage';
+// import { ToastContainer } from 'react-toastify';
 
 const Status = {
   IDLE: 'idle',
@@ -40,22 +41,30 @@ export class App extends Component {
       this.fetchGallery(nextImages, nextPage);
     }
 
-    if (prevPage !== nextPage) {
+    if (prevPage !== nextPage && nextPage !== 1) {
       this.fetchGallery(nextImages, nextPage);
+    }
+    if (nextPage > 1) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+      });
     }
   }
 
   fetchGallery(nextImages, nextPage) {
-    Api.fetchGallery(nextImages, nextPage).then(data => {
-      this.setState(prevState => {
-        return {
-          prevState,
-          images: [...prevState.images, ...data.hits],
-          status: Status.RESOLVED,
-          searchQuery: nextImages,
-        };
-      }).catch(error => this.setState({ error, status: Status.REJECTED }));
-    });
+    Api.fetchGallery(nextImages, nextPage)
+      .then(data => {
+        this.setState(prevState => {
+          return {
+            prevState,
+            images: [...prevState.images, ...data.hits],
+            status: Status.RESOLVED,
+            searchQuery: nextImages,
+          };
+        });
+      })
+      .catch(error => this.setState({ error, status: Status.REJECTED }));
   }
 
   handleFormSubmit = data => {
@@ -66,12 +75,6 @@ export class App extends Component {
     this.setState(({ showModal, bigImage }) => ({
       showModal: !showModal,
       bigImage: largeImageURL,
-    }));
-  };
-
-  closeModal = () => {
-    this.setState(() => ({
-      showModal: false,
     }));
   };
 
@@ -88,8 +91,6 @@ export class App extends Component {
       return (
         <>
           <Searchbar onSubmit={this.handleFormSubmit} />
-
-          <p>Enter a request.</p>
         </>
       );
     }
@@ -115,7 +116,6 @@ export class App extends Component {
                 this.toggleModal();
               }}
               image={bigImage}
-              closeModal={this.closeModal}
             />
           )}
           {this.state.images.length !== 0 && (
