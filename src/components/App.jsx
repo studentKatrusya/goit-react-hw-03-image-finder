@@ -108,12 +108,7 @@ export class App extends Component {
           <Searchbar onSubmit={this.handleFormSubmit} />
           <ImageGallery images={images} toggleModal={this.toggleModal} />
           {this.state.showModal && (
-            <Modal
-              onClick={() => {
-                this.toggleModal();
-              }}
-              image={bigImage}
-            />
+            <Modal onClickModal={this.toggleModal} image={bigImage} />
           )}
           {this.state.images.length !== 0 && (
             <Button onClick={this.handleLoadMore} />

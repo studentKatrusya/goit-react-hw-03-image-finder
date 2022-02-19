@@ -16,20 +16,21 @@ export default class Modal extends Component {
 
   handleKeyDown = e => {
     if (e.code === 'Escape') {
-      this.props.onClick();
+      this.props.onClickModal();
     }
   };
 
   handleBackdropClick = event => {
     if (event.currentTarget === event.target) {
-      this.props.onClick();
+      console.log("'nj hf,jnftn");
+      this.props.onClickModal();
     }
   };
 
   render() {
-    const { onClick, image } = this.props;
+    const { image } = this.props;
     return createPortal(
-      <Overley onClick={onClick}>
+      <Overley onClick={this.handleBackdropClick}>
         <Container>
           <img src={image} alt={image.tags} />
         </Container>
