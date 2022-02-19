@@ -14,9 +14,7 @@ const ImageGalleryItem = ({
         alt={tags}
         src={webformatURL}
         data-source={largeImageURL}
-        onClick={() => {
-          onClickItem(largeImageURL);
-        }}
+        onClick={onClickItem}
       />
     </Item>
   );
