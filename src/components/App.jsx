@@ -67,8 +67,8 @@ export class App extends Component {
       .catch(error => this.setState({ error, status: Status.REJECTED }));
   }
 
-  handleFormSubmit = data => {
-    this.fetchGallery(data);
+  handleFormSubmit = searchQuery => {
+    this.setState({ searchQuery, page: 1 });
   };
 
   toggleModal = largeImageURL => {

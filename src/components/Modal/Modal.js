@@ -22,7 +22,6 @@ export default class Modal extends Component {
 
   handleBackdropClick = event => {
     if (event.currentTarget === event.target) {
-      console.log("'nj hf,jnftn");
       this.props.onClickModal();
     }
   };
