@@ -78,11 +78,11 @@ export class App extends Component {
     }));
   };
 
-  handleLoadMore() {
+  handleLoadMore = () => {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
-  }
+  };
 
   render() {
     const { images, bigImage, status } = this.state;
@@ -106,10 +106,7 @@ export class App extends Component {
       return (
         <div>
           <Searchbar onSubmit={this.handleFormSubmit} />
-          <ImageGallery
-            images={images}
-            toggleModal={largeImageURL => this.toggleModal(largeImageURL)}
-          />
+          <ImageGallery images={images} toggleModal={this.toggleModal} />
           {this.state.showModal && (
             <Modal
               onClick={() => {
@@ -119,7 +116,7 @@ export class App extends Component {
             />
           )}
           {this.state.images.length !== 0 && (
-            <Button onClick={() => this.handleLoadMore()} />
+            <Button onClick={this.handleLoadMore} />
           )}
         </div>
       );
